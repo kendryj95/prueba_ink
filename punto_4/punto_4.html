@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+	
+	<script type="text/javascript">
+
+				
+		function request() {
+
+		  if(window.XMLHttpRequest) {
+		    xhttp = new XMLHttpRequest();
+		  }
+		  else if(window.ActiveXObject) {
+		    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		  }
+		 
+		  xhttp.onreadystatechange = function(){
+		  	if(xhttp.readyState == 4) {
+		  	  if(xhttp.status == 200) {
+		  	    
+		  	    var arrayElem 		= [],
+		  	    	arrayMenores 	= [];
+
+		  	    var response = JSON.parse(xhttp.responseText);
+
+		  	    console.log(response["Ink Central"]["development.inkcloud.io"]);
+
+		  	     for (var i in response["Ink Central"]["development.inkcloud.io"]){
+		  	     	response["Ink Central"]["development.inkcloud.io"][i].forEach(function(e){
+		  	     		for (var j in e.flight_day_status){
+		  	     			let date = new Date(j);
+		  	     			arrayElem.push(date.getTime());
+		  	     		}
+		  	     		var min=Math.min.apply(null, arrayElem);
+		  	     		 
+		  	     		 var date = new Date(min);
+		  	     		 var getDate = ("0" + date.getDate()).slice(-2);
+		  	     		 var minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
+		  	     		 var seconds = (date.getSeconds()<10?'0':'') + date.getSeconds();
+		  	     		 var fechaOriginal = date.getFullYear()+"-"+parseInt(date.getMonth() + 1)+"-"+getDate+" "+date.getHours()+":"+minutes+":"+seconds;
+		  	     		 arrayMenores.push(fechaOriginal);
+		  	     		 arrayElem = [];
+		  	     	});
+		  	     	
+		  	     }
+
+		  	      var html = "<h2>Valores menores del elemento flight_day_status</h2><ul>";
+
+		  	      arrayMenores.forEach(function(e){
+		  	      	html += "<li>"+e+"</li>";
+		  	      });
+
+		  	      html += "</ul>";
+
+		  	     document.write(html);
+
+		  	  }
+		  	}
+		  };
+		 
+		  xhttp.open('GET', 'flight_visualizer_test_data.json', true);
+
+
+		  xhttp.send();
+		 
+		}
+		 
+		window.onload = request;
+
+
+	</script>
+
+</body>
+</html>
